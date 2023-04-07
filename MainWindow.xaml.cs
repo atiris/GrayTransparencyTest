@@ -9,7 +9,9 @@ using System.Windows.Media;
 using d = System.Drawing;
 using System.IO;
 using System.Windows.Interop;
+using System.Reflection;
 
+using System.Windows.Media.Effects;
 namespace GrayTransparencyTest
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
@@ -84,8 +86,47 @@ namespace GrayTransparencyTest
             */
         }
 
-
         private BitmapImage GetGrayscaledImage(string imageName)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var uri = new Uri($"pack://application:,,,/{assembly.GetName().Name};component/Media/{imageName}", UriKind.Absolute);
+            var imageSource = new BitmapImage(uri);
+
+            var grayBitmap = new FormatConvertedBitmap(imageSource, PixelFormats.Gray32Float, null, 0);
+            var grayImage = new Image { Source = grayBitmap };
+            /*
+            grayImage.Effect = new OpacityMaskEffect
+            {
+                Opacity = 1,
+                Mask = imageSource,
+            };
+            */
+            var renderedBitmap = new RenderTargetBitmap(
+                grayBitmap.PixelWidth, grayBitmap.PixelHeight,
+                grayBitmap.DpiX, grayBitmap.DpiY,
+                PixelFormats.Pbgra32);
+
+            renderedBitmap.Render(grayImage);
+
+            return new BitmapImage()
+            {
+                StreamSource = ConvertToPngStream(renderedBitmap),
+                CreateOptions = BitmapCreateOptions.None,
+                CacheOption = BitmapCacheOption.OnLoad,
+            };
+        }
+
+        private static MemoryStream ConvertToPngStream(RenderTargetBitmap rtb)
+        {
+            var pngEncoder = new PngBitmapEncoder();
+            pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
+            var stream = new MemoryStream();
+            pngEncoder.Save(stream);
+            stream.Position = 0;
+            return stream;
+        }
+
+        private BitmapImage GetGrayscaledImagex(string imageName)
         {
             Uri imageUri = new Uri($"pack://application:,,,/GrayTransparencyTest;component/Media/{imageName}");
             BitmapImage originalImage = new BitmapImage(imageUri);
@@ -147,9 +188,6 @@ namespace GrayTransparencyTest
 
             return grayscaledImage;
         }
-
-
-
 
         private MemoryStream ConvertToPngStream(BitmapSource bitmap)
         {
