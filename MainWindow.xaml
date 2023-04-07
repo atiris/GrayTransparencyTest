@@ -7,6 +7,10 @@
         mc:Ignorable="d"
         Title="Gray transparency test" Height="130" Width="400">
     <Grid Background="Yellow">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
@@ -14,14 +18,12 @@
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
         <Image Source="/Media/priority.png"/>
+        <Label Grid.Row="1">Original image</Label>
         <Image Grid.Column="1" Source="{Binding ImageDefault.Source}"/>
-        <Image Grid.Column="2" Source="{Binding ImageGray.Source}"/>
-        <Image Grid.Column="3">
+        <Label Grid.Row="2" Grid.Column="1">Original binding</Label>
+        <Image Grid.Column="2">
             <Image.Source>
-                <FormatConvertedBitmap
-                    DestinationFormat="Gray16"
-                    AlphaThreshold="1"
-                    >
+                <FormatConvertedBitmap DestinationFormat="Gray16">
                     <FormatConvertedBitmap.Source>
                         <BitmapImage UriSource="pack://application:,,,/GrayTransparencyTest;component/Media/priority.png" />
                     </FormatConvertedBitmap.Source>
@@ -35,5 +37,8 @@
                 </ImageBrush>
             </Image.OpacityMask>
         </Image>
+        <Label Grid.Row="2" Grid.Column="2">Gray with XAML</Label>
+        <Image Grid.Column="3" Source="{Binding ImageGray.Source}"/>
+        <Label Grid.Row="2" Grid.Column="3">Gray with C#</Label>
     </Grid>
 </Window>
