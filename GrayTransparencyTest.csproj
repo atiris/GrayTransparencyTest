@@ -8,11 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Media\home.png" />
+    <None Remove="Media\priority.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Media\home.png" />
+    <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Media\priority.png" />
   </ItemGroup>
 
 </Project>
