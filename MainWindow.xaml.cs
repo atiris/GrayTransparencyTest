@@ -49,6 +49,10 @@ namespace GrayTransparencyTest
             {
                 ImageSource = bitmapImage
             };
+            ImageDefault = new Image()
+            {
+                Source = bitmapImage,
+            };
             FormatConvertedBitmap bitmapGreyscale = new FormatConvertedBitmap(); bitmapGreyscale.BeginInit(); bitmapGreyscale.Source = new BitmapImage(imageURI); bitmapGreyscale.DestinationFormat = PixelFormats.Gray16; bitmapGreyscale.EndInit();
             ImageGray = new Image()
             {
