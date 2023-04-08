@@ -5,13 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GrayTransparencyTest"
         mc:Ignorable="d"
-        Title="Gray transparency test" Height="130" Width="400">
+        Title="Gray transparency test" Height="130" Width="700">
     <Grid Background="Yellow">
         <Grid.RowDefinitions>
             <RowDefinition Height="3*"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
@@ -40,5 +42,9 @@
         <Label Grid.Row="2" Grid.Column="2">Gray with XAML</Label>
         <Image Grid.Column="3" Source="{Binding ImageGray.Source}"/>
         <Label Grid.Row="2" Grid.Column="3">Gray with C#</Label>
+        <Image Grid.Column="4" Source="{Binding ImageGraySolution1.Source}"/>
+        <Label Grid.Row="2" Grid.Column="4">Solution Just Answer the Question</Label>
+        <Image Grid.Column="5" Source="{Binding ImageGraySolution2.Source}"/>
+        <Label Grid.Row="2" Grid.Column="5">Solution Clemens</Label>
     </Grid>
 </Window>

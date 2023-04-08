@@ -29,6 +29,20 @@ namespace GrayTransparencyTest
             private set { imageGray = value; PropertyChangedInvoke(); }
         }
 
+        private Image imageGraySolution1 = new Image();
+        public Image ImageGraySolution1
+        {
+            get { return imageGraySolution1; }
+            private set { imageGraySolution1 = value; PropertyChangedInvoke(); }
+        }
+
+        private Image imageGraySolution2 = new Image();
+        public Image ImageGraySolution2
+        {
+            get { return imageGraySolution2; }
+            private set { imageGraySolution2 = value; PropertyChangedInvoke(); }
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private void PropertyChangedInvoke([CallerMemberName] string? propertyName = null)
@@ -57,18 +71,53 @@ namespace GrayTransparencyTest
             {
                 Source = bitmapImage,
             };
-            /*
-            FormatConvertedBitmap bitmapGreyscale = new FormatConvertedBitmap(); bitmapGreyscale.BeginInit(); bitmapGreyscale.Source = new BitmapImage(imageURI); bitmapGreyscale.DestinationFormat = PixelFormats.Gray16; bitmapGreyscale.EndInit();
+            FormatConvertedBitmap bitmapGreyscale = new FormatConvertedBitmap();
+            bitmapGreyscale.BeginInit();
+            bitmapGreyscale.Source = new BitmapImage(imageUri);
+            bitmapGreyscale.DestinationFormat = PixelFormats.Gray16;
+            bitmapGreyscale.EndInit();
             ImageGray = new Image()
             {
                 Source = bitmapGreyscale,
                 OpacityMask = opacityMask,
             };
-            */
-            ImageGray = new Image()
+
+            // https://stackoverflow.com/a/75962106/659223
+            ImageGraySolution1 = new Image()
             {
                 Source = GetTransparentGrayscale(imageUri)
             };
+
+            // https://stackoverflow.com/a/75963505/659223
+            ImageGraySolution2 = new Image()
+            {
+                Source = ConvertToGrayscale(bitmapImage)
+            };
+        }
+
+        public static BitmapSource ConvertToGrayscale(BitmapSource source)
+        {
+            var stride = (source.PixelWidth * source.Format.BitsPerPixel + 7) / 8;
+            var pixels = new byte[stride * source.PixelWidth];
+
+            source.CopyPixels(pixels, stride, 0);
+
+            for (int i = 0; i < pixels.Length; i += 4)
+            {
+                // this works for PixelFormats.Bgra32
+                var blue = pixels[i];
+                var green = pixels[i + 1];
+                var red = pixels[i + 2];
+                var gray = (byte)(0.2126 * red + 0.7152 * green + 0.0722 * blue);
+                pixels[i] = gray;
+                pixels[i + 1] = gray;
+                pixels[i + 2] = gray;
+            }
+
+            return BitmapSource.Create(
+                source.PixelWidth, source.PixelHeight,
+                source.DpiX, source.DpiY,
+                source.Format, null, pixels, stride);
         }
 
         public ImageSource? GetTransparentGrayscale(Uri imageUri)
